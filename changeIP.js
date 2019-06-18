@@ -18,6 +18,7 @@ const changeIP = function () {
     execute('aws ec2 allocate-address', res => {
         const result = JSON.parse(res)
         const newIP = result.PublicIp
+        execute(`echo ${newIP} >> used-ip.txt`, () => {})
         console.log(`New IP allocated: ${newIP}`)
 
         execute(`aws ec2 associate-address --instance-id ${INSTANCE_ID} --public-ip ${newIP}`, res => {
