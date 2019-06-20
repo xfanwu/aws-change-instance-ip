@@ -23,16 +23,17 @@ const changeIP = function () {
 
         execute(`aws ec2 associate-address --instance-id ${INSTANCE_ID} --public-ip ${newIP}`, res => {
             console.log(`Associated to instance ${INSTANCE_ID}`)
-
             execute('aws ec2 describe-addresses', res => {
                 const result = JSON.parse(res)
                 const oldIP = result.Addresses.filter(item => { return item.AssociationId === undefined })
                 console.log(`Start to release old IPs`)
-
                 oldIP.forEach(item => {
                     const allocationId = item.AllocationId
                     execute(`aws ec2 release-address --allocation-id ${allocationId}`, res => {
                         console.log(`${allocationId} has been released`)
+                        execute(`echo "${newIP}" | pbcopy`, res => {
+                            console.log(`Copied ${newIP} to pastboard`)
+                        })
                     })
                 })
             })
