@@ -31,9 +31,11 @@ const changeIP = function () {
                     const allocationId = item.AllocationId
                     execute(`aws ec2 release-address --allocation-id ${allocationId}`, res => {
                         console.log(`${allocationId} has been released`)
-                        execute(`echo "${newIP}" | pbcopy`, res => {
-                            console.log(`Copied ${newIP} to pastboard`)
-                        })
+                        if (process.platform === "darwin") {
+                            execute(`echo "${newIP}" | pbcopy`, res => {
+                                console.log(`Copied ${newIP} to pastboard`)
+                            })
+                        }
                     })
                 })
             })
